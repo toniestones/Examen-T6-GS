@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Examen Tema 6 · Fenómenos meteorológicos</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1d2433;--mut:#5d6679;--line:#d8dce5;--acc:#1f4e9c;--ok:#1b7a3d;--okbg:#e4f4ea;--ko:#b3261e;--kobg:#fbe9e7;--warn:#8a5a00;--warnbg:#fff3d6}
+@media (prefers-color-scheme:dark){:root{--bg:#14181f;--card:#1d232d;--ink:#e8ebf1;--mut:#9aa4b6;--line:#343c4a;--acc:#7aa7ec;--ok:#6fd194;--okbg:#17301f;--ko:#ff8a80;--kobg:#3a1c19;--warn:#f1c45a;--warnbg:#38300f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Calibri,sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.2rem 0}h2{font-size:1.1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+label.f{display:block;margin:10px 0 4px;font-weight:600}
+input[type=text],select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+button{font:inherit;padding:10px 18px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+button.sec{background:transparent;color:var(--acc)}button:disabled{opacity:.5}
+.q{padding:14px 0;border-bottom:1px solid var(--line)}.q:last-child{border:0}
+.qh{font-weight:600;margin-bottom:6px}.neg{text-decoration:underline;font-weight:800}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;margin:4px 0;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.opt input{margin-top:5px}.opt.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}.opt.wrong{border-color:var(--ko);background:var(--kobg)}
+.exp{margin-top:8px;font-size:.92rem;color:var(--mut)}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.pill{padding:2px 10px;border-radius:99px;background:var(--line);font-size:.85rem}
+.big{font-size:2.2rem;font-weight:800}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.st{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.st b{display:block;font-size:1.4rem}
+.clr{font-size:.85rem;color:var(--mut);background:none;border:0;padding:2px 0;text-decoration:underline;cursor:pointer}
+.note{background:var(--warnbg);color:var(--warn);padding:8px 12px;border-radius:8px;font-size:.92rem}
+.nav{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.nav a{min-width:32px;text-align:center;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-size:.8rem;text-decoration:none;color:var(--ink)}.nav a.done{background:var(--acc);color:#fff;border-color:var(--acc)}
+@media print{.bar,.noprint,button{display:none!important}body{background:#fff;color:#000}.card{border-color:#999}}
+</style></head><body><div class="wrap" id="app"></div>
+<script>
+const DATA=[
+{t:1,l:'F',q:'¿Cuál es el valor medio de la presión atmosférica al nivel del mar?',o:['1013 hPa','1000 hPa','1100 hPa','760 hPa'],e:'Se mide con el barómetro en hectopascales (hPa) o milibares (mb), unidades equivalentes.'},
+{t:1,l:'F',q:'¿Qué tiempo trae normalmente un anticiclón?',o:['Cielos despejados y poco viento','Nubes, lluvias y tormentas','Nevadas y viento fuerte','Lluvias intensas con granizo'],e:'El aire desciende, se calienta y se seca: no se forman nubes.'},
+{t:1,l:'F',neg:1,q:'Marca la afirmación INCORRECTA sobre las borrascas:',o:['En el hemisferio norte el aire gira en el sentido de las agujas del reloj','Su presión es inferior a la de las zonas que las rodean','El aire asciende, se enfría y se forman nubes y precipitaciones','Son sistemas inestables que se forman y se mueven con rapidez'],e:'En el hemisferio norte la borrasca gira en sentido contrario a las agujas del reloj; el anticiclón, en el de las agujas.'},
+{t:1,l:'F',q:'En un mapa del tiempo, si las isobaras están muy juntas, ¿qué indica?',o:['Viento fuerte','Calma total','Presión igual a 1013 hPa','Temperatura muy elevada'],e:'Las isobaras unen puntos de igual presión: cuanto más juntas, más viento.'},
+{t:1,l:'F',q:'¿Qué periodo se usa normalmente para definir el clima de un lugar?',o:['Unos 30 años','Unos 5 años','Unos 100 años','Un único año'],e:'El tiempo es el estado de la atmósfera hoy; el clima es su comportamiento medio durante un periodo largo.'},
+{t:2,l:'F',q:'Según la AEMET, ¿a partir de qué intensidad una lluvia es torrencial?',o:['Más de 60 l/m² en una hora','Más de 30 l/m² en una hora','Más de 15 l/m² en un día','Más de 100 l/m² en una hora'],e:'1 l/m² equivale a 1 mm de altura de agua.'},
+{t:2,l:'F',q:'¿Qué tipo de lluvia es la típica de las borrascas atlánticas?',o:['La lluvia frontal','La lluvia convectiva','La lluvia orográfica','La lluvia de origen mediterráneo'],e:'Lluvias extensas, continuas y de intensidad moderada.'},
+{t:2,l:'F',neg:1,q:'Marca la afirmación INCORRECTA sobre los tipos de lluvia:',o:['La lluvia convectiva es la típica de las borrascas atlánticas','La lluvia orográfica cae más en barlovento que en sotavento','La lluvia convectiva se asocia a los cumulonimbos','La lluvia frontal es extensa, continua y moderada'],e:'La típica de las borrascas atlánticas es la frontal; la convectiva es la de los cumulonimbos.'},
+{t:3,l:'F',q:'¿Qué significan las siglas DANA?',o:['Depresión Aislada en Niveles Altos','Descenso Anormal de Niveles Atmosféricos','Depresión Atlántica de Nubes Altas','Distribución Anómala de Nubosidad Alta'],e:'Es una bolsa de aire muy frío en altura (entre 5.000 y 9.000 m) separada de la corriente en chorro.'},
+{t:3,l:'F',q:'¿Cómo se llamaba popularmente a la DANA, con un término de origen alemán?',o:['Gota fría','Ciclón frío','Lluvia polar','Tormenta aislada'],e:'Los meteorólogos prefieren DANA por ser más preciso.'},
+{t:3,l:'F',q:'¿Qué hizo la AEMET a primera hora del 29 de octubre de 2024 para el litoral sur de Valencia?',o:['Activó el aviso rojo','Activó el aviso amarillo','Activó el aviso naranja','No emitió ningún aviso'],e:'Aviso rojo = peligro extraordinario.'},
+{t:3,l:'F',neg:1,q:'Marca la afirmación INCORRECTA sobre cómo actuar ante una inundación:',o:['Hay que bajar al garaje a sacar el coche cuanto antes','Si el agua entra en casa, hay que subir a los pisos altos o a la azotea','No hay que cruzar calles, puentes ni vados inundados','Se deben usar linternas y nunca velas'],e:'Nunca se debe bajar a garajes ni sótanos: es la causa de muchas muertes.'},
+{t:3,l:'F',q:'¿Qué obra salvó a la ciudad de Valencia de lo peor en octubre de 2024?',o:['El nuevo cauce del Turia (Plan Sur)','La presa de Tous','La canalización del barranco del Poyo','El puerto de Valencia'],e:'Se construyó tras la gran riada de 1957 y desvió el río por el sur de la ciudad.'},
+{t:4,l:'F',q:'¿Cómo se llama la característica permanente del clima de una zona con muy poca lluvia, como el sureste de España?',o:['Aridez','Sequía','Escasez de agua','Estrés hídrico'],e:'La sequía, en cambio, es una situación temporal.'},
+{t:4,l:'F',q:'¿Qué tipo de sequía es el origen de todas las demás?',o:['La meteorológica','La agrícola','La hidrológica','La socioeconómica'],e:'Llueve menos que la media durante un periodo prolongado.'},
+{t:4,l:'F',neg:1,q:'Marca la afirmación INCORRECTA sobre la sequía:',o:['El mar de Aral perdió casi el 90 % de su superficie por una sequía natural','La escasez de agua es un problema de gestión, no solo de clima','Los anticiclones persistentes bloquean las borrascas','La agricultura consume en torno al 80 % del agua en España'],e:'El Aral se secó porque la Unión Soviética desvió sus ríos: fue una catástrofe provocada por el ser humano.'},
+{t:5,l:'F',q:'¿Con qué escala se mide la intensidad de un huracán?',o:['Saffir-Simpson','Fujita','Mercalli','Beaufort'],e:'El tornado se mide con la escala Fujita.'},
+{t:5,l:'F',q:'¿Qué temperatura mínima debe tener el agua del mar para que se forme un huracán?',o:['Más de 26-27 °C','Más de 10 °C','Más de 15 °C','Más de 40 °C'],e:'Por eso en España no se forman huracanes.'},
+{t:5,l:'F',q:'Si se acerca un tornado y no hay sótano en casa, ¿dónde conviene refugiarse?',o:['En una habitación interior sin ventanas','Junto a una ventana, para vigilar el tornado','En la azotea, para tener mejor visión','En el garaje, dentro del coche'],e:'Un pasillo central, un baño o un armario; lejos de las ventanas.'},
+{t:6,l:'F',q:'¿Qué es El Niño?',o:['Un calentamiento anómalo del agua del Pacífico tropical','Un enfriamiento anómalo del agua del Pacífico tropical','Un ciclón tropical del océano Atlántico','Una borrasca típica del Mediterráneo'],e:'La fase fría se llama La Niña; juntos forman el ENSO.'},
+{t:1,l:'M',q:'En España, ¿qué efecto tiene el anticiclón de las Azores cuando sube hacia el norte en verano?',o:['Trae calor y sequedad','Deja pasar las borrascas atlánticas','Trae aire polar muy frío','Provoca tormentas y granizo'],e:'Cuando se retira, en cambio, deja pasar las borrascas atlánticas.'},
+{t:1,l:'M',q:'¿Por qué un anticiclón de invierno puede ser peligroso para la salud en una ciudad?',o:['Porque provoca inversiones térmicas y acumula la contaminación','Porque trae lluvias torrenciales y riadas','Porque genera vientos huracanados continuos','Porque calienta mucho el aire junto al suelo'],e:'El aire frío queda atrapado junto al suelo.'},
+{t:2,l:'M',neg:1,q:'Marca la afirmación INCORRECTA sobre por qué en el este de España llueve más en otoño:',o:['En todo el tercio oriental las lluvias más importantes son las de invierno','Las lluvias atlánticas rara vez llegan al Mediterráneo porque las montañas del interior las frenan','Las lluvias mediterráneas son convectivas y se asocian a DANAs y viento de levante','A finales de verano el Mediterráneo está a 23-26 °C o más'],e:'En todo el tercio oriental las lluvias de otoño suelen ser las más importantes.'},
+{t:2,l:'M',q:'¿Cómo se considera una lluvia de 30 l/m² caídos en media hora?',o:['Un chaparrón torrencial','Una lluvia fuerte','Una llovizna','Una lluvia moderada'],e:'A ese ritmo llegaría a 60 l/m² en una hora.'},
+{t:3,l:'M',q:'En la DANA de Valencia de 2024, ¿dónde cayeron las lluvias más intensas?',o:['En el interior: Hoya de Buñol, Utiel-Requena y Camp de Túria','Sobre la ciudad de Valencia','En la Albufera y el litoral','En la provincia de Alicante'],e:'Eran las cabeceras del barranco del Poyo y del río Magro.'},
+{t:3,l:'M',q:'Según el Laboratorio de Climatología de la Universidad de Alicante, ¿a partir de qué temperatura del agua el Mediterráneo es peligroso si coincide con una DANA?',o:['Por encima de 20 °C','Por encima de 10 °C','Por encima de 35 °C','Por encima de 5 °C'],e:'Aporta tanta energía y humedad que resulta peligroso.'},
+{t:3,l:'M',q:'¿Por qué una riada puede matar en un pueblo donde apenas ha llovido?',o:['Porque el agua de la cuenca alta baja muy rápido por ramblas de gran pendiente','Porque los pueblos están siempre sobre el cauce de los ríos','Porque en esos lugares el suelo es impermeable','Porque las tormentas se desplazan siguiendo el valle'],e:'Las ramblas están secas casi todo el año, pero recogen agua de cuencas grandes.'},
+{t:4,l:'M',q:'¿Qué tipo de sequía aparece más tarde y tarda más en recuperarse?',o:['La hidrológica','La meteorológica','La agrícola','La socioeconómica'],e:'Se trata de agua almacenada que se va consumiendo y no se repone.'},
+{t:5,l:'M',neg:1,q:'Marca la afirmación INCORRECTA sobre cómo actuar ante un tornado:',o:['Conviene huir en coche en línea recta','No hay que refugiarse bajo puentes ni pasos elevados, porque el viento se acelera','Sin refugio, hay que tumbarse en una zanja protegiéndose cabeza y cuello','Hay que evitar salas de techo muy amplio, como gimnasios o cines'],e:'No se debe huir en coche: el tornado puede cambiar de dirección.'},
+{t:6,l:'M',q:'¿Qué efecto tiene El Niño sobre Indonesia y Australia?',o:['Sequías e incendios forestales','Lluvias intensas e inundaciones','Un monzón más intenso','Más huracanes en el Atlántico'],e:'Con La Niña ocurre lo contrario: lluvias intensas e inundaciones.'},
+{t:2,l:'D',q:'Por cada grado que sube la temperatura, ¿cuánto más vapor de agua puede contener el aire?',o:['Alrededor de un 7 %','Alrededor de un 1 %','Alrededor de un 20 %','Alrededor de un 50 %'],e:'Por eso las lluvias torrenciales parecen cada vez más frecuentes e intensas.'},
+{t:3,l:'D',q:'¿Cuántas víctimas mortales causó la DANA de octubre de 2024 en toda España?',o:['237','229','150','81'],e:'229 fueron en la provincia de Valencia; el resto, en Castilla-La Mancha y Andalucía.'},
+{t:3,l:'D',q:'¿Cuántos l/m² cayeron en una hora en Turís el 29 de octubre de 2024, récord de intensidad horaria en España?',o:['Unos 185','Unos 90','Unos 60','Unos 400'],e:'En 24 horas cayeron unos 771 l/m² en el mismo lugar.'},
+{t:3,l:'D',neg:1,q:'Marca la afirmación INCORRECTA sobre la DANA de Valencia (2024):',o:['Las lluvias más intensas cayeron sobre la ciudad de Valencia','El caudal del barranco del Poyo superó los 2.000 m³/s','Los estudios de atribución concluyen que el cambio climático hizo la lluvia un 12 % más intensa','El mensaje ES-Alert llegó hacia las 20:10 h, con el agua ya entrando en las casas'],e:'Cayeron en el interior; la ciudad de Valencia se salvó de lo peor gracias al Plan Sur.'},
+{t:3,l:'D',q:'¿Cuál es la riada más mortífera del siglo XX en España?',o:['La del Vallès (1962)','La de Valencia (1957)','La de 1973 en Almería y Murcia','La de Biescas (1996)'],e:'Más de 800 muertos según la mayoría de las estimaciones.'},
+{t:4,l:'D',neg:1,q:'Marca la afirmación INCORRECTA sobre las grandes sequías de España:',o:['La de 1979-1983 destacó por su intensidad y no por su duración','La de 1749-1753 fue la primera bien documentada y llegó a secar el Tormes','En 2008 se llegó a plantear traer agua a Barcelona en barcos','Cataluña declaró la emergencia por sequía en febrero de 2024'],e:'Lo peor de la de 1979-1983 fue su duración: casi cuatro años.'},
+{t:5,l:'D',q:'¿A partir de qué categoría de la escala Saffir-Simpson se considera un «huracán mayor»?',o:['La categoría 3','La categoría 1','La categoría 2','La categoría 5'],e:'Categoría 3: vientos de 178 a 208 km/h.'},
+{t:5,l:'D',neg:1,q:'Marca la afirmación INCORRECTA sobre tornados y huracanes:',o:['La trayectoria de un huracán solo se conoce con minutos de antelación','Un tornado mide de decenas de metros a unos 2 km de anchura','Un huracán se forma siempre sobre océanos tropicales cálidos','Un huracán puede durar de días a semanas'],e:'El huracán se sigue con días de antelación; el tornado se avisa con minutos.'},
+{t:5,l:'D',q:'¿Qué escala se utiliza en Europa desde 2023 para medir los tornados?',o:['La escala Fujita internacional (IF)','La escala Fujita mejorada (EF)','La escala Saffir-Simpson','La escala original de Fujita (1971)'],e:'La EF se usa en EE. UU. desde 2007.'},
+{t:6,l:'D',q:'¿Qué anomalía de temperatura del agua en la región Niño 3.4, mantenida varios meses, define un episodio de El Niño?',o:['0,5 °C o más sobre la media','2 °C o más sobre la media','0,1 °C sobre la media','5 °C o más sobre la media'],e:'Con La Niña baja 0,5 °C o más por debajo de la media.'},
+{t:3,l:'MD',q:'¿Cuántas personas murieron en la riada de Málaga de 1907, cuando el Guadalmedina bajó cargado de agua y barro?',o:['21','81','140','87'],e:'Apenas llovió sobre la ciudad: el agua venía de la cuenca alta.'},
+{t:3,l:'MD',q:'En el camping de Biescas (1996), ¿a cuántos m³/s pasó el barranco de Arás en una hora, desde unos 3 m³/s?',o:['Unos 300','Unos 30','Unos 3.000','Unos 4.000'],e:'Murieron 87 personas.'},
+{t:3,l:'MD',q:'¿Cuántas personas fueron evacuadas por la rotura de la presa de Tous (1982) en el río Júcar?',o:['Más de 100.000','Unas 10.000','Unas 1.000','Más de 500.000'],e:'Hubo al menos 8 muertos oficiales (hasta unos 40 según algunas estimaciones).'},
+{t:3,l:'MD',q:'¿Cuántos l/m² cayeron sobre Valencia durante la segunda crecida de la riada de 1957?',o:['125 l/m²','250 l/m²','60 l/m²','600 l/m²'],e:'90 de ellos en 40 minutos; el Turia llevó unos 3.700-4.000 m³/s.'},
+{t:3,l:'MD',q:'En la tormenta estacionaria de Santa Cruz de Tenerife (31-mar-2002) cayeron 232,6 l/m². ¿Cuántos fueron en una sola hora?',o:['162,6 l/m²','90 l/m²','185 l/m²','60 l/m²'],e:'Murieron 8 personas.'},
+{t:3,l:'MD',neg:1,q:'Marca la afirmación INCORRECTA sobre las peores inundaciones de la historia de España:',o:['La riada de San Policarpo (1626) la provocó el río Guadalmedina','En la riada de Santa Teresa (1879) se desbordó el Segura tras lluvias en la cabecera del Guadalentín','En la riada de 1973 cayeron hasta 600 l/m² en Zurgena (Almería) y Albuñol (Granada)','La riada de Málaga (1907) se produjo sin llover apenas sobre la ciudad'],e:'La riada de San Policarpo (Salamanca) fue del río Tormes.'},
+{t:4,l:'MD',q:'En febrero de 2024, ¿en torno a qué porcentaje de su capacidad estaban los embalses del sistema Ter-Llobregat cuando Cataluña declaró la emergencia por sequía?',o:['Un 15 %','Un 5 %','Un 40 %','Un 60 %'],e:'La sequía de 2022-2024 estuvo agravada por temperaturas récord.'},
+{t:5,l:'MD',q:'Según las crónicas, ¿qué parte de las casas de Cádiz derribó el «huracán» del 15 de marzo de 1671?',o:['Casi un tercio','Casi la mitad','Una décima parte','Casi todas'],e:'Hundió barcos y causó más de 60 muertos; la franja destruida medía 300-400 m.'},
+{t:5,l:'MD',q:'¿Cuántos muertos causó el tornado («ciclón») de Madrid del 12 de mayo de 1886?',o:['47','60','21','87'],e:'Sobre todo en Carabanchel Alto y Bajo; rachas de cerca de 300 km/h (F3-F4).'},
+{t:6,l:'MD',q:'En un año normal, ¿cuánto más alto llega a ser el nivel del mar junto a Indonesia y Australia por el agua cálida que empujan los alisios?',o:['Hasta medio metro','Hasta cinco metros','Hasta diez centímetros','Hasta dos metros'],e:'El aire cálido y húmedo asciende allí y produce abundantes lluvias (circulación de Walker).'},
+];
+const LOGO_B64='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';
+/* ---- Generador de PDF sin librerías ---- */
+const HW=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+const MAPC={'’':"'",'‘':"'",'“':'"','”':'"','–':'\x96','—':'\x97','≈':'~','−':'-','≥':'>=','≤':'<=','→':'->','←':'<-','✔':'OK','✘':'X','…':'...','•':'\x95','₂':'2'};
+function pdfEnc(s){let o='';for(const ch of String(s)){if(MAPC[ch]!==undefined){o+=MAPC[ch];continue}const c=ch.charCodeAt(0);o+=c<256?ch:'?'}return o}
+function pdfEsc(s){return s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')}
+function tw(s,size,bold){let w=0;for(const ch of s){const c=ch.charCodeAt(0);w+=(c>=32&&c<=126)?HW[c-32]:556}return w*size/1000*(bold?1.06:1)}
+function pdfWrap(s,size,bold,maxw){const out=[];let line='';for(const w of s.split(/\s+/)){if(!w)continue;const t=line?line+' '+w:w;if(tw(t,size,bold)<=maxw||!line)line=t;else{out.push(line);line=w}}if(line)out.push(line);return out.length?out:['']}
+function makePDF(R,qs,ans,LV){
+  const PW=595,PH=842,M=50,CW=PW-2*M;const pages=[[]];let y=PH-M;
+  const cur=()=>pages[pages.length-1];
+  const f1=n=>n.toFixed(1);
+  const nf=x=>x.toFixed(2).replace('.',',');
+  const drawLogo=()=>{cur().push(`q 150 0 0 24.6 ${M} ${PH-M-24.6} cm /Im1 Do Q`);
+    const nt=pdfEnc('NOTA: '+nf(R.nota)+' / 10');const sz=14;const wd=tw(nt,sz,true);
+    cur().push(`BT /F2 ${sz} Tf ${f1(PW-M-wd)} ${PH-M-14} Td (${pdfEsc(nt)}) Tj ET`);
+    const sub=pdfEnc('ACIERTOS: '+R.ac+'     FALLOS: '+R.fa);cur().push(`BT /F2 9 Tf ${f1(PW-M-tw(sub,9,true))} ${PH-M-27} Td (${pdfEsc(sub)}) Tj ET`);
+    cur().push(`0.8 w ${M} ${PH-M-34} m ${PW-M} ${PH-M-34} l S`);y-=42};
+  const need=h=>{if(y-h<M+20){pages.push([]);y=PH-M;drawLogo()}};
+  // ---------- PAGINA 1: HOJA DE RESPUESTAS ----------
+  {const P=cur();const X0=40,W=PW-80;
+   const box=(x,yy,w,h,fill)=>P.push((fill?`0.7 g ${f1(x)} ${f1(yy)} ${f1(w)} ${f1(h)} re f 0 g `:'')+`0.7 w ${f1(x)} ${f1(yy)} ${f1(w)} ${f1(h)} re S`);
+   const T=(x,yy,t,sz,bold,al)=>{const e=pdfEnc(t);const w=tw(e,sz,bold);const xx=al==='c'?x-w/2:(al==='r'?x-w:x);P.push(`BT /${bold?'F2':'F1'} ${sz} Tf ${f1(xx)} ${f1(yy)} Td (${pdfEsc(e)}) Tj ET`)};
+   let top=PH-40;const hh=48;
+   box(X0,top-hh,340,hh);box(X0+340,top-hh,W-340,hh);
+   T(X0+170,top-20,'Fenómenos meteorológicos (Tema 6)',12,1,'c');T(X0+170,top-38,'EXAMEN MODELO: '+R.model,12,1,'c');
+   P.push(`q 160 0 0 26.3 ${f1(X0+340+(W-340-160)/2)} ${f1(top-hh+(hh-26.3)/2)} cm /Im1 Do Q`);
+   top-=hh;box(X0,top-18,W,18);T(X0+4,top-13,'Nombre y apellidos: '+R.name,10,0);
+   top-=18;box(X0,top-18,W/3,18);box(X0+W/3,top-18,W/3,18);box(X0+2*W/3,top-18,W/3,18);
+   T(X0+4,top-13,'DNI: '+(R.dni||''),10,0);T(X0+W/3+4,top-13,'Fecha: '+R.date,10,0);T(X0+2*W/3+4,top-13,'Curso:',10,0);
+   top-=18;
+   T(PW/2,top-16,`Modelo ${R.model}  |  Tiempo: ${fmt(R.el)}  |  En blanco: ${R.bl}  |  Aciertos netos: ${nf(R.net)}`,8.5,0,'c');
+   top-=24;
+   const nw=28,lw=30,rh=16.5,gap=40;const gw=nw+4*lw;const gx=(PW-(2*gw+gap))/2;
+   [0,1].forEach(g=>{const x0=gx+g*(gw+gap);
+     box(x0,top-rh,nw,rh);for(let j=0;j<4;j++){box(x0+nw+j*lw,top-rh,lw,rh);T(x0+nw+j*lw+lw/2,top-rh+5,'ABCD'[j],9,0,'c')}
+     for(let r=0;r<25;r++){const i=g*25+r;const yy=top-rh*(r+2);box(x0,yy,nw,rh);T(x0+nw/2,yy+5,String(i+1),9,0,'c');
+       for(let j=0;j<4;j++){const isK=qs[i].ans==='ABCD'[j];box(x0+nw+j*lw,yy,lw,rh,isK);
+         if(ans[i]===j)T(x0+nw+j*lw+lw/2,yy+4.5,'X',11,1,'c')}}});
+   const by=top-rh*26;const x0=gx,x1=gx+gw+gap;
+   for(let k=0;k<3;k++){box(x0,by-rh*(k+1),nw,rh);for(let j=0;j<4;j++)box(x0+nw+j*lw,by-rh*(k+1),lw,rh)}
+   const lab=[['ACIERTOS',String(R.ac)],['FALLOS',String(R.fa)],['NOTA',nf(R.nota)]];
+   lab.forEach((l,k)=>{const yy=by-rh*(k+1);T(x1+nw+2*lw-4,yy+5,l[0],9,1,'r');
+     if(k<2){box(x1+nw+2*lw,yy,lw,rh);T(x1+nw+2.5*lw,yy+4.5,l[1],10,1,'c')}else{box(x1+nw+2*lw,yy,2*lw,rh);T(x1+nw+3*lw,yy+4.5,l[1],10,1,'c')}});
+   let ny=by-rh*3-20;T(X0,ny,'Casilla sombreada = respuesta correcta. X = respuesta marcada por el alumno.',8,0);ny-=16;
+   const fh=70,fw=(W-20)/2;ny-=4;[0,1].forEach(g=>{const fx=X0+g*(fw+20);box(fx,ny-fh,fw,fh);T(fx+6,ny-13,g?'Firma del profesor/a':'Firma del alumno/a',9,1)});
+  }
+  // ensamblar
+  const objs=[];const add=s=>{objs.push(s);return objs.length};
+  add('<< /Type /Catalog /Pages 2 0 R >>');add('PLACEHOLDER');
+  const fo1=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  const fo2=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const bin=atob(LOGO_B64);const im=add(`<< /Type /XObject /Subtype /Image /Width 420 /Height 69 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bin.length} >>\nstream\n${bin}\nendstream`);
+  const kids=[];const N=pages.length;
+  pages.forEach((pg,n)=>{
+    const foot=`BT /F1 8 Tf ${M} 30 Td (${pdfEsc(pdfEnc(`${R.name} - Modelo ${R.model} - Nota ${R.nota.toFixed(2).replace('.',',')}/10`))}) Tj ET BT /F1 8 Tf ${PW-M-60} 30 Td (Pagina ${n+1} de ${N}) Tj ET`;
+    const content=pg.join('\n')+'\n'+foot;const cid=add(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    const pid=add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /Font << /F1 ${fo1} 0 R /F2 ${fo2} 0 R >> /XObject << /Im1 ${im} 0 R >> >> /Contents ${cid} 0 R >>`);kids.push(pid+' 0 R')});
+  objs[1]=`<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${N} >>`;
+  let out='%PDF-1.4\n';const offs=[];
+  objs.forEach((o,i)=>{offs.push(out.length);out+=`${i+1} 0 obj\n${o}\nendobj\n`});
+  const xr=out.length;out+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const bytes=new Uint8Array(out.length);for(let i=0;i<out.length;i++)bytes[i]=out.charCodeAt(i)&255;
+  return new Blob([bytes],{type:'application/pdf'});
+}
+const ENVIO_URL='https://script.google.com/macros/s/AKfycbz2QAHRfmQCmnqG4497pDUOCu6F4aF8QUJsakDPeserjJ_kWJHdQsy9Hyob73lhmnEA/exec'; /* pega aquí la URL de la aplicación web de Google Apps Script */
+const LOGO='<img src="data:image/jpeg;base64,'+LOGO_B64+'" alt="Campus FP" style="display:block;max-width:300px;width:60%;height:auto;margin:4px 0 10px;background:#fff;padding:4px;border-radius:6px">';
+const KEY='DBACCAABDCACDABCDBDADBCDBDBDABCACAACBADCCBADACBCBD'.split('');
+const LV={F:'Fácil',M:'Media',D:'Difícil',MD:'Muy difícil'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const SEEDS={A:0,B:11,C:23};
+function build(model){
+  const SEED=SEEDS[model];let data=DATA.map(x=>({...x}));
+  let s0=SEED;const r0=()=>{s0=(s0*1664525+1013904223)%4294967296;return s0/4294967296;};
+  const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(r0()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  if(SEED){shuf(data);}else{data=data.map((x,i)=>({x,i})).sort((a,b)=>a.x.t-b.x.t||a.i-b.i).map(o=>o.x);}
+  data.forEach((x,i)=>{const pos='ABCD'.indexOf(KEY[i]);const dist=SEED?shuf(x.o.slice(1)):x.o.slice(1);const arr=[];let k=0;for(let p=0;p<4;p++)arr.push(p==pos?x.o[0]:dist[k++]);x.opts=arr;x.ans=KEY[i];});
+  return data;
+}
+let S={model:'A',name:'',qs:[],ans:[],t0:0,limit:0,timer:null,done:false};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function fmt(sec){const m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function hasSes(){try{return !!localStorage.getItem('ses')}catch(e){return false}}
+function home(){
+  clearInterval(S.timer);
+  $('#app').innerHTML=`${LOGO}<h1>Examen Tema 6 · Fenómenos meteorológicos</h1>
+  <p style="color:var(--mut)">50 preguntas tipo test, 4 opciones, una sola correcta. Se corrige con el mismo solucionario que el examen en papel.</p>
+  <div class="card"><label class="f" for="nm">Nombre y apellidos</label><input type="text" id="nm" value="${esc(store('nm')||'')}" autocomplete="off">
+  <label class="f" for="dni">DNI</label><input type="text" id="dni" value="${esc(store('dni')||'')}" autocomplete="off">
+  <label class="f" for="md">Modelo de examen</label><select id="md"><option value="A">Modelo A (orden por temas)</option><option value="B">Modelo B</option><option value="C">Modelo C</option></select>
+  <p class="note"><b>Tiempo límite:</b> 1:30 horas.</p>
+  <p class="note">Puntuación: cada acierto vale 0,2 puntos; cada tres fallos restan un acierto; las preguntas en blanco ni puntúan ni restan. En las preguntas «INCORRECTA» hay que marcar la afirmación falsa.</p>
+  <p><button id="go">Empezar examen</button></p></div>${hasSes()?'<div class="card"><p><b>Hay un examen sin terminar en este equipo.</b></p><p><button id="cont">Continuar examen anterior</button></p></div>':''}`;
+  if($('#cont'))$('#cont').onclick=resume;
+  $('#go').onclick=()=>{const nm=$('#nm').value.trim();if(!nm){$('#nm').focus();$('#nm').style.borderColor='var(--ko)';return}
+    store('nm',nm);const dni=$('#dni').value.trim();store('dni',dni);S0dni=dni;start(nm,$('#md').value,90)};
+}
+let S0dni='';
+function resume(){let o;try{o=JSON.parse(localStorage.getItem('ses'))}catch(e){}if(!o)return;
+  S={dni:o.d,model:o.m,name:o.n,qs:build(o.m),ans:o.a,t0:o.t,limit:o.l,timer:null,done:false};render();S.timer=setInterval(tick,1000);tick();upd();
+  S.ans.forEach((a,i)=>{if(a!==null){const r=$(`#o${i}_${a} input`);if(r){r.checked=true;mark(i)}}})}
+function start(name,model,limit){
+  S={dni:S0dni,model,name,qs:build(model),ans:Array(50).fill(null),t0:Date.now(),limit:limit*60,timer:null,done:false};
+  render();S.timer=setInterval(tick,1000);tick();
+}
+function tick(){
+  const el=Math.floor((Date.now()-S.t0)/1000);const t=$('#tm');if(!t)return;
+  if(S.limit){const left=S.limit-el;t.textContent='⏱ '+fmt(Math.max(left,0));if(left<=0){clearInterval(S.timer);submit(true)}}
+  else t.textContent='⏱ '+fmt(el);
+}
+function render(){
+  const q=S.qs;
+  let h=`<div class="bar"><div><b>Modelo ${S.model}</b> · ${esc(S.name)}</div><div><span class="pill" id="cnt"></span> <span class="pill" id="tm"></span></div><button id="end">Entregar</button></div>
+  <div class="nav noprint" id="nav"></div>`;
+  h+='<div class="card">';
+  q.forEach((x,i)=>{
+    const parts=esc(x.q).split('INCORRECTA');let qt=parts.join('<span class="neg">INCORRECTA</span>');
+    h+=`<div class="q" id="q${i}"><div class="qh">${i+1}. ${qt}</div>`;
+    x.opts.forEach((o,j)=>{h+=`<label class="opt" id="o${i}_${j}"><input type="radio" name="q${i}" value="${j}"><span><b>${'ABCD'[j]})</b> ${esc(o)}</span></label>`});
+    h+=`<button class="clr noprint" data-c="${i}">Dejar en blanco</button></div>`;
+  });
+  h+='</div>';
+  $('#app').innerHTML=h;
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.onchange=e=>{const i=+e.target.name.slice(1);S.ans[i]=+e.target.value;mark(i);upd()});
+  document.querySelectorAll('.clr').forEach(b=>b.onclick=()=>{const i=+b.dataset.c;S.ans[i]=null;document.querySelectorAll(`input[name=q${i}]`).forEach(r=>r.checked=false);mark(i);upd()});
+  $('#end').onclick=()=>{const b=S.ans.filter(a=>a===null).length;if(confirm(b?`Te quedan ${b} preguntas en blanco. ¿Entregar el examen?`:'¿Entregar el examen?'))submit()};
+  upd();
+}
+function mark(i){for(let j=0;j<4;j++){const o=$(`#o${i}_${j}`);o.classList.toggle('sel',S.ans[i]===j)}}
+function save(){try{if(S&&!S.done&&S.qs.length)localStorage.setItem('ses',JSON.stringify({n:S.name,d:S.dni,m:S.model,a:S.ans,t:S.t0,l:S.limit}))}catch(e){}}
+function upd(){save();const n=S.ans.filter(a=>a!==null).length;$('#cnt').textContent=n+' / 50 contestadas';
+  $('#nav').innerHTML=S.ans.map((a,i)=>`<a href="#q${i}" class="${a!==null?'done':''}">${i+1}</a>`).join('')}
+function submit(auto){
+  if(S.done)return;S.done=true;clearInterval(S.timer);try{localStorage.removeItem('ses')}catch(e){}
+  const el=Math.floor((Date.now()-S.t0)/1000);
+  let ac=0,fa=0,bl=0;const by={};
+  S.qs.forEach((x,i)=>{const a=S.ans[i];const k=x.l;by[k]=by[k]||{n:0,ok:0};by[k].n++;
+    if(a===null)bl++;else if('ABCD'[a]===x.ans){ac++;by[k].ok++}else fa++});
+  const net=Math.max(0,ac-fa/3);const nota=Math.round(net*0.2*100)/100;
+  const res={name:S.name,dni:S.dni,model:S.model,ac,fa,bl,nota,el,date:new Date().toLocaleString('es-ES')};
+  S.res={...res,by,net};
+  const h=`${LOGO}<h1>Examen finalizado${auto?' (tiempo agotado)':''}</h1>
+  <div class="card"><p>${esc(S.name)} · Modelo ${S.model}</p><p>Tu examen ha sido entregado. Se está generando el PDF con tu hoja de respuestas y enviándolo al profesor. No cierres esta ventana hasta ver el mensaje de confirmación.</p>
+  <p class="noprint" style="margin-top:14px"><button class="sec" onclick="dlpdf()">Volver a generar y enviar el PDF</button></p><p id="envio" style="color:var(--mut)"></p></div>`;
+  $('#app').innerHTML=h;window.scrollTo(0,0);
+  window.dlpdf=()=>{const blob=makePDF(S.res,S.qs,S.ans,LV);const d=new Date();const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const fn='Examen_Tema6_'+S.name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\W+/g,'_')+'_Modelo'+S.model+'_'+ds+'.pdf';
+    const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);
+    const st=$('#envio');
+    if(!ENVIO_URL){if(st)st.textContent='PDF generado. Entrégalo al profesor.';return}
+    if(st)st.textContent='Enviando el PDF al profesor...';
+    const fr=new FileReader();fr.onload=()=>{const b64=String(fr.result).split(',')[1];
+      fetch(ENVIO_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({nombre:S.name,dni:S.dni||'',modelo:S.model,nota:S.res.nota,archivo:fn,pdf:b64})})
+      .then(r=>r.text()).then(x=>{if(x.trim()==='ok'){if(st)st.textContent='PDF enviado al profesor. Conserva también el archivo descargado.'}else throw new Error(x)})
+      .catch(()=>{if(st)st.textContent='NO se ha podido enviar por correo. Entrega al profesor el PDF descargado.'})};
+    fr.readAsDataURL(blob)};
+  setTimeout(()=>window.dlpdf(),100);
+}
+window.addEventListener('beforeunload',e=>{if(S.qs.length&&!S.done){e.preventDefault();e.returnValue=''}});
+home();
+</script></body></html>
